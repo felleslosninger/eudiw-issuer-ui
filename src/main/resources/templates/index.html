@@ -26,6 +26,17 @@
                   method="POST">
 
                 <p class="ds-paragraph">
+                    <label for="access_token_field"
+                           data-weight="medium"
+                           class="ds-label">
+                        Maskinporten access-token
+                    </label>
+                    <input type="text" id="access_token_field"
+                              placeholder="IxC0B76vlWl3fiQhAwZUmD0hr_PPwC9hSIXRdoUslPU="
+                              class="ds-input"/>
+                </p>
+
+                <p class="ds-paragraph">
                     <label for="eaa_data_field"
                            data-weight="medium"
                            class="ds-label">
@@ -35,19 +46,20 @@
                            placeholder="{nnid:123456789}"
                            class="ds-input"></textarea>
                 </p>
+
+                <p class="ds-paragraph">
+
+                    Døme på attributter i JSON-format: <br/>
+                    <code>
+                        {"nnid":"123456789"}
+                    </code>
+                </p>
                 <button class="ds-button ds-button--primary"
                         type="submit"
                         form="send_attributes_form"
                         data-variant="primary">
                     Start utferdig av bevis
                 </button>
-                <br class="ds-paragraph">
-
-                    Døme på attributter i JSON-format: <br/>
-                    <code>
-                        {"nnid":"123456789"}
-                    </code>
-
             </form>
 
 
