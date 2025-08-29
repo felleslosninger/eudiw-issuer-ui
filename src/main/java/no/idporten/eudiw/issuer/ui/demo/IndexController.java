@@ -14,7 +14,8 @@ public class IndexController {
 
     @PostMapping("/start-issuance")
     public String startIssuance() {
-        return "response";
+        // TODO: kall mot issuer-service sitt push endpoint
+        return "issuer_response";
     }
 
 
