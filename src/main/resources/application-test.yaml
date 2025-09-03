@@ -9,4 +9,4 @@ issuer-ui-demo:
 
 maskinporten:
   oauth2:
-    issuer: https://test.maskinporten.no
+    issuer: https://test.maskinporten.no/
