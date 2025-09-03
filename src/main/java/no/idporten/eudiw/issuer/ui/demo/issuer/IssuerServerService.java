@@ -2,7 +2,6 @@ package no.idporten.eudiw.issuer.ui.demo.issuer;
 
 import no.idporten.eudiw.issuer.ui.demo.exception.IssuerServerException;
 import no.idporten.eudiw.issuer.ui.demo.issuer.config.IssuerServerProperties;
-import no.idporten.eudiw.issuer.ui.demo.issuer.domain.IssuanceResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,23 +31,22 @@ public class IssuerServerService {
     }
 
 
-    public IssuanceResponse startIssuance() {
+    public String startIssuance(String json) {
         String path = issuerServerProperties.getIssuanceEndpoint();
-        return callIssuerServer(path);
+        return callIssuerServer(path, json);
     }
 
-    private IssuanceResponse callIssuerServer(final String path) {
-        String inputArgs = "test";
+    private String callIssuerServer(final String path, String json) {
         try {
-            IssuanceResponse result = restClient.post().uri(
-                            path).accept(MediaType.APPLICATION_JSON).body(inputArgs).retrieve()
-                    .body(IssuanceResponse.class);
-            log.debug("search for " + inputArgs + ". Returned: " + result);
+            String result = restClient.post().uri(
+                            path).accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).body(json).retrieve()
+                    .body(String.class);
+            log.debug("search for " + json + ". Returned: " + result);
             return result;
         } catch (HttpClientErrorException e) {
-            throw new IssuerServerException("Configuration error against issuer-server? path="+path, e);
+            throw new IssuerServerException("Configuration error against issuer-server? path=" + path, e);
         } catch (HttpServerErrorException e) {
-            throw new IssuerServerException("callIssuerServer failed for input" + inputArgs, e);
+            throw new IssuerServerException("callIssuerServer failed for input" + json, e);
         }
     }
 

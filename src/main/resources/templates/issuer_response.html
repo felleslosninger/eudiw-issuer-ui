@@ -17,11 +17,19 @@
 
 
     <h2 class="ds-heading">
-        starta utferdig av bevis
+        No er me i gong med å utferding av bevis, køyr pao med mobilen!
     </h2>
     <p th:text="${offer}"></p>
 
+    <a th:href="${urlSameSite}">
+        <button class="button ">Open på mobilen</button>
+    </a>
 
+    <p class="ds-paragraph">
+        <a th:href="@{/}" class="ds-button">
+            Heim
+        </a>
+    </p>
 
 </main>
 
