@@ -95,15 +95,15 @@ public class StartIssuanceController {
                    "claims": [
                      {
                        "name": "norwegian_national_id_number",
-                       "value": "1234567890"
+                       "value": "12345678901"
                      },
                      {
                        "name": "norwegian_national_id_number_status",
-                       "value": "Utstedt"
+                       "value": "Kontrollert"
                      },
                      {
                        "name": "norwegian_national_id_number_type",
-                       "value": "JUKS"
+                       "value": "D-nummer"
                      }
                    ]
                  }
