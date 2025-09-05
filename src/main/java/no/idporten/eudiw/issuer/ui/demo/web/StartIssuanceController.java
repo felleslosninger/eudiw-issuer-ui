@@ -1,4 +1,4 @@
-package no.idporten.eudiw.issuer.ui.demo;
+package no.idporten.eudiw.issuer.ui.demo.web;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -10,7 +10,6 @@ import com.google.zxing.common.BitMatrix;
 import no.idporten.eudiw.issuer.ui.demo.exception.IssuerUiException;
 import no.idporten.eudiw.issuer.ui.demo.issuer.IssuerServerService;
 import no.idporten.eudiw.issuer.ui.demo.issuer.domain.IssuanceResponse;
-import no.idporten.eudiw.issuer.ui.demo.issuer.domain.JsonRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,30 +48,44 @@ public class StartIssuanceController {
         String normalizedJson = jsonRequest.json().replaceAll("\\s", ""); // TODO add validation
         logger.info(normalizedJson);
 
+        IssuanceRequest request = new IssuanceRequest(jsonRequest.json(), issuerServerService.getIssuerUrl(), "Authorization: Bearer <maskinporten-token>");
+        model.addAttribute("request", request);
         IssuanceResponse response = issuerServerService.startIssuance(normalizedJson);
 
-        String jsonString = toJsonString(response);
-
-        model.addAttribute("offer", jsonString);
-        String offerEncoded = URLEncoder.encode(jsonString, StandardCharsets.UTF_8);
-        String uri = "openid-credential-offer://?credential_offer=" + offerEncoded;
-        model.addAttribute("urlSameSite", uri);
-        logger.info("Issuer offer: " + response);
-        logger.info("Issuer offer encoded: " + offerEncoded);
+        String uri = convertToCredentialOfferUri(response);
+        String qrCode = null;
         try {
-            String qrcode = Base64.getEncoder().encodeToString(createQRCodeImage(uri));
-            model.addAttribute("qrcode", qrcode);
+            qrCode = Base64.getEncoder().encodeToString(createQRCodeImage(uri));
         } catch (IOException | WriterException e) {
             // TODO handle exceptions better
             logger.error("Failed to create QRCode for uri=" + uri, e);
             model.addAttribute("error", "Failed to create QRCode");
         }
+
+        Issuance issuance = new Issuance(toPrettyJsonString(response), uri, qrCode);
+        model.addAttribute("issuance", issuance);
         return "issuer_response";
+    }
+
+    private String convertToCredentialOfferUri(IssuanceResponse response) {
+        String jsonString = toJsonString(response);
+        String offerEncoded = URLEncoder.encode(jsonString, StandardCharsets.UTF_8);
+        String uri = "openid-credential-offer://?credential_offer=" + offerEncoded;
+        logger.info("Issuer offer: " + response);
+        logger.info("Issuer offer encoded: " + offerEncoded);
+        return uri;
     }
 
     private String toJsonString(IssuanceResponse response) {
         try {
             return new ObjectMapper().writeValueAsString(response.credentialOffer());
+        } catch (JsonProcessingException e) {
+            throw new IssuerUiException("Failed to convert response to Json string", e);
+        }
+    }
+    private String toPrettyJsonString(IssuanceResponse response) {
+        try {
+            return new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(response);
         } catch (JsonProcessingException e) {
             throw new IssuerUiException("Failed to convert response to Json string", e);
         }

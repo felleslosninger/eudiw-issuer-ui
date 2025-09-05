@@ -29,16 +29,22 @@ public class IssuerServerService {
         this.restClient = restClient;
     }
 
+    public String getIssuerUrl() {
+        return issuerServerProperties.getBaseUrl() + issuerServerProperties.getIssuanceEndpoint();
+    }
+
+    public String getIssuerPath() {
+        return issuerServerProperties.getIssuanceEndpoint();
+    }
 
     public IssuanceResponse startIssuance(String json) {
-        String path = issuerServerProperties.getIssuanceEndpoint();
         IssuanceResponse result;
         try {
             result = restClient.post().uri(
-                            path).accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).body(json).retrieve()
+                            getIssuerPath()).accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).body(json).retrieve()
                     .body(IssuanceResponse.class);
         } catch (HttpClientErrorException e) {
-            throw new IssuerServerException("Configuration error against issuer-server? path=" + path, e);
+            throw new IssuerServerException("Configuration error against issuer-server? path=" + getIssuerPath(), e);
         } catch (HttpServerErrorException e) {
             throw new IssuerServerException("callIssuerServer failed for input" + json, e);
         }
