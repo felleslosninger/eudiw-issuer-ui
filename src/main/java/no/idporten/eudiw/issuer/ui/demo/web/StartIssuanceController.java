@@ -50,6 +50,7 @@ public class StartIssuanceController {
 
         IssuanceRequest request = new IssuanceRequest(jsonRequest.json(), issuerServerService.getIssuerUrl(), "Authorization: Bearer <maskinporten-token>");
         model.addAttribute("request", request);
+
         IssuanceResponse response = issuerServerService.startIssuance(normalizedJson);
 
         String uri = convertToCredentialOfferUri(response);
