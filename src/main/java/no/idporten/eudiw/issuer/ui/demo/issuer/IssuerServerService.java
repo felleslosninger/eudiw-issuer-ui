@@ -29,6 +29,10 @@ public class IssuerServerService {
         this.restClient = restClient;
     }
 
+    public String getIssuerBaseUrl() {
+        return issuerServerProperties.getBaseUrl();
+    }
+
     public String getIssuerUrl() {
         return issuerServerProperties.getBaseUrl() + issuerServerProperties.getIssuanceEndpoint();
     }

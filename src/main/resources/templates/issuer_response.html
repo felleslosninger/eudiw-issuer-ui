@@ -43,9 +43,12 @@
         <details class="ds-details" data-variant="default">
             <summary>Request til issuer-server</summary>
             <div>
-                <div><span class="ds-label">ENDPOINT: </span><span th:text="${request.endpoint}"></span></div>
-                <div><span class="ds-label">TOKEN: </span><span th:text="${request.token}"></span></div>
-                <div><span class="ds-label">BODY: </span></div>
+                <code>POST <span th:text="${request.endpoint}"></span></code>
+                <br/>
+                <code><span th:text="${request.token}"></span></code>
+                <br/>
+                <code><span th:text="${request.headers}"></span></code>
+                <br/><br/>
                 <code th:text="${request.body}" style="white-space: pre-wrap; overflow-wrap: break-word;"></code>
             </div>
         </details>
@@ -60,6 +63,6 @@
 
 </main>
 
-<footer th:replace="~{fragments/general :: page_footer_fragment}"></footer>
+<footer th:replace="fragments/general :: page_footer_fragment(issuer=${issuerUrl})"></footer>
 </body>
 </html>

@@ -13,6 +13,7 @@ import no.idporten.eudiw.issuer.ui.demo.issuer.domain.IssuanceResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,6 +38,11 @@ public class StartIssuanceController {
         this.issuerServerService = issuerServerService;
     }
 
+    @ModelAttribute("issuerUrl")
+    public String issuerUrl() {
+        return issuerServerService.getIssuerBaseUrl();
+    }
+
     @GetMapping("/")
     public String start(Model model) {
         model.addAttribute("jsonRequest", new JsonRequest(defaultJsonRequest()));
@@ -45,10 +51,13 @@ public class StartIssuanceController {
 
     @PostMapping("/start-issuance")
     public String startIssuance(@ModelAttribute("jsonRequest") JsonRequest jsonRequest, Model model) {
+
         String normalizedJson = jsonRequest.json().replaceAll("\\s", ""); // TODO add validation
         logger.info(normalizedJson);
 
-        IssuanceRequest request = new IssuanceRequest(jsonRequest.json(), issuerServerService.getIssuerUrl(), "Authorization: Bearer <maskinporten-token>");
+        String contentType = "Content-Type: " + MediaType.APPLICATION_JSON;
+        String authorization = "Authorization: Bearer <maskinporten-token>";
+        IssuanceRequest request = new IssuanceRequest(jsonRequest.json(), issuerServerService.getIssuerUrl(), authorization, contentType);
         model.addAttribute("request", request);
 
         IssuanceResponse response = issuerServerService.startIssuance(normalizedJson);
@@ -58,9 +67,8 @@ public class StartIssuanceController {
         try {
             qrCode = Base64.getEncoder().encodeToString(createQRCodeImage(uri));
         } catch (IOException | WriterException e) {
-            // TODO handle exceptions better
             logger.error("Failed to create QRCode for uri=" + uri, e);
-            model.addAttribute("error", "Failed to create QRCode");
+            model.addAttribute("error", "Generering av QR kode feila.");
         }
 
         Issuance issuance = new Issuance(toPrettyJsonString(response), uri, qrCode);
