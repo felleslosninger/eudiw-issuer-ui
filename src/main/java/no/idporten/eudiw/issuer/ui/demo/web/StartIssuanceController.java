@@ -9,6 +9,7 @@ import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import no.idporten.eudiw.issuer.ui.demo.exception.IssuerUiException;
 import no.idporten.eudiw.issuer.ui.demo.issuer.IssuerServerService;
+import no.idporten.eudiw.issuer.ui.demo.issuer.config.IssuerServerProperties;
 import no.idporten.eudiw.issuer.ui.demo.issuer.domain.IssuanceResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,14 +36,17 @@ public class StartIssuanceController {
 
     private final IssuerServerService issuerServerService;
 
+    private final IssuerServerProperties properties;
+
     @Autowired
-    public StartIssuanceController(IssuerServerService issuerServerService) {
+    public StartIssuanceController(IssuerServerService issuerServerService, IssuerServerProperties properties) {
         this.issuerServerService = issuerServerService;
+        this.properties = properties;
     }
 
     @ModelAttribute("issuerUrl")
     public String issuerUrl() {
-        return issuerServerService.getIssuerBaseUrl();
+        return properties.getBaseUrl();
     }
 
     @GetMapping("/")
@@ -57,10 +61,7 @@ public class StartIssuanceController {
         String normalizedJson = jsonRequest.json().replaceAll("\\s", ""); // TODO add validation
         logger.info(normalizedJson);
 
-        String contentType = "Content-Type: " + MediaType.APPLICATION_JSON;
-        String authorization = "Authorization: Bearer [Maskinporten-token]";
-        IssuanceRequest request = new IssuanceRequest(jsonRequest.json(), issuerServerService.getIssuerUrl(), authorization, contentType);
-        model.addAttribute("request", request);
+        model.addAttribute("request", createRequestTraceing(jsonRequest));
 
         IssuanceResponse response = issuerServerService.startIssuance(normalizedJson);
 
@@ -76,6 +77,12 @@ public class StartIssuanceController {
         Issuance issuance = new Issuance(toPrettyJsonString(response), uri, qrCode);
         model.addAttribute("issuance", issuance);
         return "issuer_response";
+    }
+
+    private IssuanceRequest createRequestTraceing(JsonRequest jsonRequest) {
+        String contentType = "Content-Type: " + MediaType.APPLICATION_JSON;
+        String authorization = "Authorization: Bearer [Maskinporten-token]";
+        return new IssuanceRequest(jsonRequest.json(), properties.getIssuanceUrl(), authorization, contentType);
     }
 
     private String convertToCredentialOfferUri(IssuanceResponse response) {
