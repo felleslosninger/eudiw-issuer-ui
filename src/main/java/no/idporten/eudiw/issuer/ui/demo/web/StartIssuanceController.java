@@ -58,7 +58,7 @@ public class StartIssuanceController {
         logger.info(normalizedJson);
 
         String contentType = "Content-Type: " + MediaType.APPLICATION_JSON;
-        String authorization = "Authorization: Bearer <maskinporten-token>";
+        String authorization = "Authorization: Bearer [Maskinporten-token]";
         IssuanceRequest request = new IssuanceRequest(jsonRequest.json(), issuerServerService.getIssuerUrl(), authorization, contentType);
         model.addAttribute("request", request);
 
