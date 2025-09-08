@@ -29,7 +29,9 @@ import java.util.Base64;
 @Controller
 public class StartIssuanceController {
 
-    Logger logger = LoggerFactory.getLogger(StartIssuanceController.class);
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    private final Logger logger = LoggerFactory.getLogger(StartIssuanceController.class);
 
     private final IssuerServerService issuerServerService;
 
@@ -87,16 +89,16 @@ public class StartIssuanceController {
 
     private String toJsonString(IssuanceResponse response) {
         try {
-            return new ObjectMapper().writeValueAsString(response.credentialOffer());
+            return objectMapper.writeValueAsString(response.credentialOffer());
         } catch (JsonProcessingException e) {
             throw new IssuerUiException("Failed to convert response to Json string", e);
         }
     }
     private String toPrettyJsonString(IssuanceResponse response) {
         try {
-            return new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(response);
+            return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(response);
         } catch (JsonProcessingException e) {
-            throw new IssuerUiException("Failed to convert response to Json string", e);
+            throw new IssuerUiException("Failed to convert response to pretty Json string", e);
         }
     }
 
