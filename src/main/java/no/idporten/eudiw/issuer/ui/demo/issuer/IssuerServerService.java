@@ -33,7 +33,7 @@ public class IssuerServerService {
         return issuerServerProperties.getBaseUrl() + issuerServerProperties.getIssuanceEndpoint();
     }
 
-    protected String getIssuerPath() {
+    private String getIssuerPath() {
         return issuerServerProperties.getIssuanceEndpoint();
     }
 
