@@ -31,6 +31,7 @@ public class IssuerServerService {
     }
 
     public CredentialOffer startIssuance(String credentialConfigurationId) {
+        log.info("Starting issuance for credential configuration {}", credentialConfigurationId);
         String issuanceCreatePath = issuerServerProperties.getIssuanceEndpoint();
         String uri = UriComponentsBuilder.fromPath(issuanceCreatePath)
                 .queryParam("credential_configuration_id", credentialConfigurationId)
@@ -41,7 +42,7 @@ public class IssuerServerService {
                             uri).accept(MediaType.APPLICATION_JSON).retrieve()
                     .body(CredentialOffer.class);
         } catch (HttpClientErrorException e) {
-            throw new IssuerServerException("Configuration error against issuer-server? path=" + issuanceCreatePath, e);
+            throw new IssuerServerException("Configuration error against issuer-server? uri=" + uri, e);
         } catch (HttpServerErrorException e) {
             throw new IssuerServerException("callIssuerServer failed for input" + credentialConfigurationId, e);
         }

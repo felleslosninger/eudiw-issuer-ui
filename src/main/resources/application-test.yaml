@@ -7,6 +7,3 @@ issuer-ui:
   issuer-server:
     base-url: https://utsteder.test.eidas2sandkasse.net
 
-#maskinporten:
-#  oauth2:
-#    issuer: https://test.maskinporten.no/

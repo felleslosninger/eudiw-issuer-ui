@@ -16,9 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -49,12 +47,19 @@ public class StartIssuanceController {
     }
 
     @GetMapping("/")
-    public String start() {
+    public String start(Model model) {
+        model.addAttribute("credential_configuration_id", "");
         return "start";
     }
 
-    @PostMapping("/start-issuance")
-    public String startIssuance(@ModelAttribute("credential_configuration_id") String credentialConfigurationId, Model model) {
+    @GetMapping("/start-issuance")
+    public String startIssuance2(@RequestParam("credential_configuration_id") String credentialConfigurationId, Model model) {
+        logger.info("startIssuance2: "+credentialConfigurationId);
+
+        if (credentialConfigurationId == null || credentialConfigurationId.isEmpty()) {
+            credentialConfigurationId = "no.digdir.eudiw.pid_mso_mdoc";
+        }
+        logger.info("Starting issuance for credential_configuration_id=" + credentialConfigurationId);
 
         model.addAttribute("request", createRequestTraceing(credentialConfigurationId));
 
