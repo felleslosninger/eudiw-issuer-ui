@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="nn-no">
     <head>
         <th:block th:replace="~{fragments/general :: base_head_fragment}"></th:block>
-        <title>EUDIW sandkassa for digital lommebok: Test issuer</title>
+        <title>EUDIW sandkassa for digital lommebok: Bevisutferdar</title>
     </head>
 
     <body>
@@ -21,21 +21,20 @@
             <form th:fragment="send_attributes_form_fragment"
                   id="send_attributes_form"
                   th:action="@{/start-issuance}"
-                  th:object="${jsonRequest}"
                   method="POST">
 
 
                 <p class="ds-paragraph">
-                    <label for="eaa_data_field"
+                    <label for="credential_configuration_id"
                            data-weight="medium"
                            class="ds-label">
-                        Attributter for utferdig av bevis (i JSON-format)
+                        Credential configuration ID (frå issuer)
                     </label>
-                    <textarea id="eaa_data_field"
-                           placeholder="{nnid:123456789}"
-                           class="ds-input"
-                              th:field="*{json}">
-                    </textarea>
+                    <select name="credential_configuration_ids" id="credential_configuration_id"
+                           class="ds-select">
+                        <option value="no.digdir.eudiw.pid_mso_mdoc" selected>no.digdir.eudiw.pid_mso_mdoc</option>
+                        <option value="no.skatteetaten.nnid_mso_mdoc">no.skatteetaten.nnid_mso_mdoc</option>
+                    </select>
                 </p>
 
                 <button class="ds-button ds-button--primary"
